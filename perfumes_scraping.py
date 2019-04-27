@@ -23,20 +23,23 @@ def scrap_link(link):
 
     perfume_soup = BeautifulSoup(perfume_page, 'html.parser')
     
-    brand_and_product = perfume_soup.find_all("h1", {"itemprop": "name"})[0].find_all("span")
-    
     brand_name = ""
     product_name = ""
     
     try:
-        brand_name = brand_and_product[0].text
-    except: 
-        print("nie ma brandu" + " " + link)
-    
-    try:
-        product_name = brand_and_product[1].text
+        brand_and_product = perfume_soup.find_all("h1", {"itemprop": "name"})[0].find_all("span")
+        
+        try:
+            brand_name = brand_and_product[0].text
+        except: 
+            print("nie ma brandu" + " " + link)
+        
+        try:
+            product_name = brand_and_product[1].text
+        except:
+            print("nie ma nazwy produktu" + " " + link)
     except:
-        print("nie ma nazwy produktu" + " " + link)
+        print("nie ma żadnej nazwy" + " " + link)
         
     price = perfume_soup.find_all("div", {"id": "pd-price"})[0].find_all("span")[0].text
 
