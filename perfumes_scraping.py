@@ -41,9 +41,13 @@ def scrap_link(link):
             print("nie ma nazwy produktu w {}".format(link))
     except:
         print("nie ma żadnej nazwy w {}".format(link))
+     
         
-    price = perfume_soup.find_all("div", {"id": "pd-price"})[0].find_all("span")[0].text
-    
+    try:
+        price = perfume_soup.find_all("div", {"id": "pd-price"})[0].find_all("span")[0].text
+    except:
+        price = ""
+        
     # in case of missing information, empty strings will be added
     main_description = ""
     bullet_description = ""
@@ -75,8 +79,11 @@ def scrap_link(link):
         # if no fragrance group avaliable, empty string will be added
         fragrance_group = ""
         print("nie ma grupy zapachowej w {}".format(link))
-
-    image = perfume_soup.find_all("img", {"id": "pd-image-main"})[0]["src"]
+        
+    try:
+        image = perfume_soup.find_all("img", {"id": "pd-image-main"})[0]["src"]
+    except:
+        image = ""
     
     # appending scrapped data to the data frame
     scrapped_data.loc[scrapped_data.shape[0], :] = [brand_name, product_name,
