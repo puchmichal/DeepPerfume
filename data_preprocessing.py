@@ -23,9 +23,10 @@ for index in range(len(full_description)):
     sentences = tokenize.sent_tokenize(row)
     for i in range(ceil(len(sentences)/2)):
         if i == len(sentences)//2:
-            two_sentences_data.append(sentences[2*i])
+            two_sentences_data.append((sentences[2*i]).strip("Skład zapachu"))
         else:
-            two_sentences_data.append(sentences[2*i] + " " + sentences[2*i + 1])
+            two_sentences_data.append(
+                (sentences[2*i] + " " + sentences[2*i + 1]).strip("Skład zapachu"))
 
 for i in range(len(bullet_description)):
     sentence = bullet_description.iloc[i]
