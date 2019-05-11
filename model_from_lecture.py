@@ -5,13 +5,12 @@ from keras.layers import Dropout
 from keras.layers import LSTM
 from keras.callbacks import ModelCheckpoint
 from keras.utils import np_utils
-from sklearn.preprocessing import OneHotEncoder
+#from sklearn.preprocessing import OneHotEncoder 
 import pandas as pd
-
 
 df = pd.read_csv("preprocessed_data.csv", encoding="utf-8-sig")
 
-whole_text = " ".join(df["0"]).lower()
+whole_text = " ".join(df["0"].unique()).lower()
 raw_text = whole_text
 
 # create mapping of unique chars to integers
@@ -37,7 +36,6 @@ for i in range(0, n_chars - seq_length, 1):
 n_patterns = len(dataX)
 print ("Total Patterns: ", n_patterns)
 
-
 # reshape X to be [samples, time steps, features]
 X = numpy.reshape(dataX, (n_patterns, seq_length, 1))
 # normalize
@@ -56,27 +54,24 @@ model.compile(loss='categorical_crossentropy', optimizer='adam')
 filepath="weights-improvement-{epoch:02d}-{loss:.4f}.hdf5"
 checkpoint = ModelCheckpoint(filepath, monitor='loss', verbose=1, save_best_only=True, mode='min')
 callbacks_list = [checkpoint]
-model.fit(X, y, epochs=20, batch_size=1000, callbacks=callbacks_list)
+model.fit(X, y, epochs=30, batch_size=1000, callbacks=callbacks_list)
 
-
-# load the network weights
-filename = "weights-improvement-19-1.9435.hdf5"
-model.load_weights(filename)
 model.compile(loss='categorical_crossentropy', optimizer='adam')
 
 start = numpy.random.randint(0, len(dataX)-1)
 pattern = dataX[start]
-print "Seed:"
-print "\"", ''.join([int_to_char[value] for value in pattern]), "\""
+print("Seed:")
+print("\"", ''.join([int_to_char[value] for value in pattern]), "\"")
+
 # generate characters
-for i in range(1000):
+
+for i in range(100):
 	x = numpy.reshape(pattern, (1, len(pattern), 1))
 	x = x / float(n_vocab)
 	prediction = model.predict(x, verbose=0)
 	index = numpy.argmax(prediction)
 	result = int_to_char[index]
 	seq_in = [int_to_char[value] for value in pattern]
-	sys.stdout.write(result)
+	print(result, end='')
 	pattern.append(index)
 	pattern = pattern[1:len(pattern)]
-print "\nDone."
