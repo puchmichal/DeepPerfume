@@ -1,4 +1,5 @@
 import pandas as pd
+import re
 #import spacy
 #import en_core_web_sm
 from gensim.models import KeyedVectors
@@ -22,6 +23,9 @@ def remove_brands_and_product_names(data_all, raw_text):
             pass
         
     return(raw_text)
+    
+def remove_punctuation(raw_text):
+    return(re.sub(r'[^\w\s]','',raw_text))
 
 def vectorize_text(raw_text, model):
     
@@ -59,6 +63,8 @@ raw_text = " ".join(df["0"].unique()).lower()
 
 raw_text = remove_brands_and_product_names(data_all, raw_text)
 
+raw_text = remove_punctuation(raw_text)
+
 vectorized_text, not_in_vocab, in_vocab = vectorize_text(raw_text, model)
 
 # check how many words we missed 
@@ -71,7 +77,7 @@ included_words = len(in_vocab)
 
 included_unique_words = len(set(in_vocab))
 
-# we missed 12.4% of words 
+# we missed 3.67% of words 
 
 perc = missed_words / (missed_words + included_words) * 100
 
